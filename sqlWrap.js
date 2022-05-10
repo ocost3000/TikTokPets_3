@@ -20,13 +20,13 @@ db.all = util.promisify(db.all);
 
 // initialize database tables if necessary
 initTables()
-  .catch(function(err) {
+  .catch(function (err) {
     console.log("database table creation error", err);
   });
 
-async function initTables () {
-  
-  let result1 =  await checkIfThere("VideoTable");
+async function initTables() {
+
+  let result1 = await checkIfThere("VideoTable");
   if (!result1) {
     console.log("Creating video table");
     await createVideoTable();
@@ -44,12 +44,12 @@ async function initTables () {
 
 
 async function checkIfThere(table) {
-console.log("checking for",table);
-// make the SQL command
-let cmd = " SELECT name FROM sqlite_master WHERE type='table' AND name = ? ";
-let result = await db.get(cmd,[table]);
-if (result == undefined) { return false;} 
-else { return true; }
+  console.log("checking for", table);
+  // make the SQL command
+  let cmd = " SELECT name FROM sqlite_master WHERE type='table' AND name = ? ";
+  let result = await db.get(cmd, [table]);
+  if (result == undefined) { return false; }
+  else { return true; }
 }
 
 
@@ -57,25 +57,25 @@ else { return true; }
 async function createVideoTable() {
   // explicitly declaring the rowIdNum protects rowids from changing if the 
   // table is compacted; not an issue here, but good practice
-const cmd = 'CREATE TABLE VideoTable (rowIdNum INTEGER PRIMARY KEY, url TEXT, nickname TEXT, userid TEXT, flag INTEGER)';
-  
-await db.run(cmd);
-console.log("made VideoTable");
-// error will be caught in initTables
+  const cmd = 'CREATE TABLE VideoTable (rowIdNum INTEGER PRIMARY KEY, url TEXT, nickname TEXT, userid TEXT, flag INTEGER)';
+
+  await db.run(cmd);
+  console.log("made VideoTable");
+  // error will be caught in initTables
 }
 
 async function createPrefTable() {
   // explicitly declaring the rowIdNum protects rowids from changing if the 
   // table is compacted; not an issue here, but good practice
-const cmd = 'CREATE TABLE PrefTable (rowIdNum INTEGER PRIMARY KEY, better INTEGER, worse INTEGER)';
-  
-await db.run(cmd);
-console.log("made PrefTable");
-// error will be caught in initTables
+  const cmd = 'CREATE TABLE PrefTable (rowIdNum INTEGER PRIMARY KEY, better INTEGER, worse INTEGER)';
+
+  await db.run(cmd);
+  console.log("made PrefTable");
+  // error will be caught in initTables
 }
 
 // empty all data from PrefTable
-async function deleteEverythingPrefs () {
+async function deleteEverythingPrefs() {
   await db.run("delete from PrefTable");
   // vacuum is an SQL command, kind of garbage collection
   await db.run("vacuum");

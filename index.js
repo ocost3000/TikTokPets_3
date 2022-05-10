@@ -8,6 +8,7 @@ const express = require("express");
 // local modules
 const db = require("./sqlWrap");
 const win = require("./pickWinner");
+const dbHelp = require("./dbHelpers")
 
 
 // gets data out of HTTP request body 
@@ -62,6 +63,21 @@ app.get("/getWinner", async function(req, res) {
   }
 });
 
+app.get("/getTwoVideos", async (req, res) => {
+  /* 
+  TODO:
+  This should pick two distict random videos (that is, not the same), 
+  and send an array containing their VideoTable data in the HTTP response. 
+  Notice the handy function "getRandomInt" at the top of "index.js".
+  */
+  let videoCount = await dbHelp.getDatabaseCount();
+  let query = "";
+
+  // get random video IDs, no duplicates
+
+  // query for both videos to compare, return their VideoTable Data in response
+});
+
 
 // Page not found
 app.use(function(req, res){
@@ -77,4 +93,3 @@ app.use(function(req, res){
 const listener = app.listen(3000, function () {
   console.log("The static server is listening on port " + listener.address().port);
 });
-
