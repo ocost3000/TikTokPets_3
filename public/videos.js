@@ -1,19 +1,19 @@
 /* Functions for handling tiktok videos */
 
 // Add the blockquote element that tiktok will load the video into the given div
-async function addVideo(tiktokurl,divElmt) {
+async function addVideo(tiktokurl, divElmt) {
   let videoNumber = tiktokurl.split("video/")[1];
 
   let block = document.createElement('blockquote');
   block.className = "tiktok-embed";
   block.cite = tiktokurl;
   // have to be formal for attribute with dashes
-  block.setAttribute("data-video-id",videoNumber);
+  block.setAttribute("data-video-id", videoNumber);
   block.style = "width: 325px; height: 563px;"
 
   let section = document.createElement('section');
   block.appendChild(section);
-  
+
   divElmt.appendChild(block);
 }
 
@@ -35,21 +35,21 @@ function newTikTokScript() {
 // the reload button action; takes out the blockquote and the scripts, and puts it all back in again.
 // the browser thinks it's a new video and reloads it
 // the argument i is the index of the video to reload, in case there are two
-function reloadVideo (divElmt) {
-  
+function reloadVideo(divElmt) {
+
   // get the blockquote in the divElmt
-    let block = divElmt.getElementsByClassName("tiktok-embed")[0];
-    // and remove it
-    console.log("block",block);
-    let parent = block.parentNode;
-    parent.removeChild(block);
+  let block = divElmt.getElementsByClassName("tiktok-embed")[0];
+  // and remove it
+  console.log("block", block);
+  let parent = block.parentNode;
+  parent.removeChild(block);
 
   // remove both the script we put in and the
   // one tiktok adds in
   let script1 = document.getElementById("tiktokScript");
   let script2 = script1.nextElementSibling;
 
-  let body = document.body; 
+  let body = document.body;
   body.removeChild(script1);
   body.removeChild(script2);
 

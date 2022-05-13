@@ -86,6 +86,10 @@ app.get("/getTwoVideos", async (req, res) => {
   // query for both videos to compare, return their VideoTable Data in response
 });
 
+app.post("/insertPref", async (req, res) => {
+  console.log(`Got Response: ${req.body}`);
+})
+
 
 // Page not found
 app.use(function(req, res){
