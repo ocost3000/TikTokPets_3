@@ -88,6 +88,8 @@ app.get("/getTwoVideos", async (req, res) => {
 
 app.post("/insertPref", async (req, res) => {
   console.log(`Got Response: ${req.body}`);
+  await insertPref(req.body);
+  res.send("continue");
 })
 
 
@@ -134,4 +136,14 @@ async function getVidData(rowIds) {
     }
   }
   return vidData;
+}
+
+async function insertPref(prefs) {
+  let query = "INSERT INTO PrefTable (better, worse) VALUES(?, ?)";
+  try {
+    await db.run(query, [prefs.better, prefs.worse]);
+    console.log(`Inserted into PrefTable: ${prefs}`);
+  } catch (e) {
+    console.log(`Could not report preference: ${e}`);
+  }
 }
