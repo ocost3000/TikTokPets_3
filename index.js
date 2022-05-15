@@ -87,7 +87,7 @@ app.get("/getTwoVideos", async (req, res) => {
 });
 
 app.post("/insertPref", async (req, res) => {
-  console.log(`Got Response: ${req.body}`);
+  console.log(`Got Response: ${JSON.stringify(req.body)}`);
   await insertPref(req.body);
   res.send("continue");
 })
@@ -143,7 +143,30 @@ async function insertPref(prefs) {
   try {
     await db.run(query, [prefs.better, prefs.worse]);
     console.log(`Inserted into PrefTable: ${prefs}`);
+    await showTable("PrefTable");
   } catch (e) {
     console.log(`Could not report preference: ${e}`);
+  }
+  
+}
+
+async function dumpTable(table) {
+
+  let sql = ""
+  if (table === "VideoTable") {
+    sql = "select * from VideoTable";
+  } else {
+    sql = "select * from PrefTable";
+  }
+  let result = await db.all(sql);
+  return result;
+}
+
+async function showTable(table) {
+  try {
+    let tableResult = await dumpTable(table);
+    console.log(tableResult);
+  } catch (e) {
+    console.log(e);
   }
 }
