@@ -89,7 +89,18 @@ app.get("/getTwoVideos", async (req, res) => {
 app.post("/insertPref", async (req, res) => {
   console.log(`Got Response: ${JSON.stringify(req.body)}`);
   await insertPref(req.body);
-  res.send("continue");
+
+  // check if full
+  let count = await getDatabaseCount("PrefTable");
+  console.log(`Current count: ${count}`)
+  let message = ""
+  if (count < 15) {
+    message = "continue";
+  } else {
+    message = "pick winner";
+  }
+  res.type('txt');
+  res.send(message);
 })
 
 
@@ -110,11 +121,11 @@ const listener = app.listen(3000, function () {
 
 //----------------------DATABASE--------------------------
 
-async function getDatabaseCount() {
+async function getDatabaseCount(table) {
 
-	const query = "SELECT COUNT(*) FROM VideoTable";
+  const query = `SELECT COUNT(*) FROM ${table}`;
 	let vidCount = await db.get(query);
-	return vidCount;
+	return vidCount["COUNT(*)"];
 
 }
 
@@ -152,13 +163,8 @@ async function insertPref(prefs) {
 
 async function dumpTable(table) {
 
-  let sql = ""
-  if (table === "VideoTable") {
-    sql = "select * from VideoTable";
-  } else {
-    sql = "select * from PrefTable";
-  }
-  let result = await db.all(sql);
+  let query = `select * from ${table}`
+  let result = await db.all(query);
   return result;
 }
 

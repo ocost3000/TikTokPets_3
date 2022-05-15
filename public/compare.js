@@ -29,27 +29,35 @@ for (let i=0; i<2; i++) {
     event.currentTarget.classList.remove("unloved");
     event.currentTarget.heart.classList.remove("far");
     event.currentTarget.heart.classList.add("fas");
-    payload.better = event.currentTarget.vidId
+    payload.better = event.currentTarget.vidId;
 
     event.currentTarget.adversary.classList.add("unloved");
     event.currentTarget.adversary.heart.classList.add("far");
     event.currentTarget.adversary.heart.classList.remove("fas");
-    payload.worse = event.currentTarget.adversary.vidId
+    payload.worse = event.currentTarget.adversary.vidId;
 
   });
 } // for loop
 
 nextButton.addEventListener("click", () => {
 
-  sendPostRequest("/insertPref", payload)
-    .then(res => {
-      console.log("Preference submitted!")
-      window.location.reload()
-    })
-    .catch(err => {
-      console.log(`Error! ${err}`)
-      window.location.reload()
-    })
+  if (payload.better == 0 || payload.worse == 0) {
+    alert("Please choose a favorite video!");
+  } else {
+    sendPostRequest("/insertPref", payload)
+      .then(async res => {
+        if (res === "pick winner") {
+          window.location.href = "/winner.html";
+        } else {
+          console.log("Preference submitted!");
+          window.location.reload();
+        }
+      })
+      .catch(err => {
+        console.log(err);
+        window.location.reload();
+      });
+  }
 
 });
 
