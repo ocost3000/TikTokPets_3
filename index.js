@@ -53,7 +53,7 @@ app.get("/getWinner", async function(req, res) {
   // change parameter to "true" to get it to computer real winner based on PrefTable 
   // with parameter="false", it uses fake preferences data and gets a random result.
   // winner should contain the rowId of the winning video.
-  let winner = await win.computeWinner(8,false);
+  let winner = await win.computeWinner(8, true);
 
   // you'll need to send back a more meaningful response here.
   res.json({});

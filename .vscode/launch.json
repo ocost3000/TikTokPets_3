@@ -8,6 +8,7 @@
 			"type": "pwa-node",
 			"request": "launch",
 			"name": "Launch Program",
+			"preLaunchTask": "Win Testing",
 			"skipFiles": [
 				"<node_internals>/**"
 			],

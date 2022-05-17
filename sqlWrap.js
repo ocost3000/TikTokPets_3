@@ -38,7 +38,8 @@ async function initTables() {
     await createPrefTable();
   } else {
     // clean out any old data
-    await deleteEverythingPrefs();
+    // NOTE: comment out for testing
+    // await deleteEverythingPrefs();
   }
 }
 
