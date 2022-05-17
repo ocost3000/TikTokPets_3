@@ -1,6 +1,7 @@
 // when this page is opened, get the most recently added video and show it.
 // function is defined in video.js
 let divElmt = document.getElementById("tiktokDiv");
+let vidTitleElmt = document.getElementById("title-h1")
 
 let reloadButton = document.getElementById("reload");
 // set up button to reload video in "tiktokDiv"
@@ -9,27 +10,24 @@ reloadButton.addEventListener("click",function () {
 });
 
 
+getWinningUrl();
 
-getWinningUrl()
+// --------------------------------------------------------------------
 
-// GET request to /getWinner,
-// and send the result back in the HTTP response.
+function showWinningVideo(url) {
+  addVideo(url, divElmt);
+  loadTheVideos();
+}
 
-// TODO: make request for winner
 function getWinningUrl() {
+  let winnerUrl = "empty";
   sendGetRequest("/getWinner")
     .then(res => {
-      let winnerUrl = res.url;
-      showWinningVideo(winnerUrl)
+      winnerUrl = res.url;
+      vidTitleElmt.textContent = res.nickname;
+      showWinningVideo(winnerUrl);
     })
     .catch(err => {
       console.log(err);
     });
-}
-
-
-function showWinningVideo(url) {
-  // let winningUrl = getWinningUrl();
-  addVideo(url, divElmt);
-  loadTheVideos();
 }
