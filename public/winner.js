@@ -10,26 +10,26 @@ reloadButton.addEventListener("click",function () {
 
 
 
+getWinningUrl()
+
 // GET request to /getWinner,
 // and send the result back in the HTTP response.
 
 // TODO: make request for winner
-// function getWinningUrl() {
-//   sendGetRequest("/getWinner")
-//     .then(res => {
-//       winnerUrl = "";
-//     })
-//     .catch(err => {
-//       console.log(err);
-//     });
-// }
+function getWinningUrl() {
+  sendGetRequest("/getWinner")
+    .then(res => {
+      let winnerUrl = res.url;
+      showWinningVideo(winnerUrl)
+    })
+    .catch(err => {
+      console.log(err);
+    });
+}
 
-showWinningVideo()
 
-function showWinningVideo() {
-  
-  let winningUrl = "https://www.tiktok.com/@catcatbiubiubiu/video/6990180291545468166";
+function showWinningVideo(url) {
   // let winningUrl = getWinningUrl();
-  addVideo(winningUrl, divElmt);
+  addVideo(url, divElmt);
   loadTheVideos();
 }

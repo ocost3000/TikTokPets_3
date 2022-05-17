@@ -57,7 +57,8 @@ app.get("/getWinner", async function(req, res) {
   let winner = await win.computeWinner(8, true);
 
   // you'll need to send back a more meaningful response here.
-  res.json({});
+  let winnerObj = await query.getVidData([winner]);
+  res.json(winnerObj[0]);
   } catch(err) {
     res.status(500).send(err);
   }
