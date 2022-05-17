@@ -8,6 +8,7 @@ const express = require("express");
 // local modules
 const db = require("./sqlWrap");
 const win = require("./pickWinner");
+const query = require("./query.js");
 
 
 // gets data out of HTTP request body 
@@ -69,29 +70,29 @@ app.get("/getTwoVideos", async (req, res) => {
   Notice the handy function "getRandomInt" at the top of "index.js".
   */
 
-  let allVidIds = await getAllVideoIds()
+  let allVidIds = await query.getAllVideoIds();
 
   // get random video IDs, no duplicates
   let indices = [null, null]
-  indices[0] = getRandomInt(allVidIds.length)
+  indices[0] = getRandomInt(allVidIds.length);
   do {
-    indices[1] = getRandomInt(allVidIds.length)
-  } while (indices[1] == indices[0])
+    indices[1] = getRandomInt(allVidIds.length);
+  } while (indices[1] == indices[0]);
 
-  let rowIds = indices.map(i => allVidIds[i])
-  let vidData = await getVidData(rowIds)
+  let rowIds = indices.map(i => allVidIds[i]);
+  let vidData = await query.getVidData(rowIds);
   
-  res.send(vidData)
+  res.send(vidData);
 
   // query for both videos to compare, return their VideoTable Data in response
 });
 
 app.post("/insertPref", async (req, res) => {
   console.log(`Got Response: ${JSON.stringify(req.body)}`);
-  await insertPref(req.body);
+  await query.insertPref(req.body);
 
   // check if full
-  let count = await getDatabaseCount("PrefTable");
+  let count = await query.getDatabaseCount("PrefTable");
   console.log(`Current count: ${count}`)
   let message = ""
   if (count < 15) {
@@ -118,61 +119,3 @@ app.use(function(req, res){
 const listener = app.listen(3000, function () {
   console.log("The static server is listening on port " + listener.address().port);
 });
-
-//----------------------DATABASE--------------------------
-
-async function getDatabaseCount(table) {
-
-  const query = `SELECT COUNT(*) FROM ${table}`;
-	let vidCount = await db.get(query);
-	return vidCount["COUNT(*)"];
-
-}
-
-async function getAllVideoIds() {
-  const queryVals = await db.all("SELECT rowIdNum FROM VideoTable")
-  const vals = queryVals.map(obj => obj.rowIdNum)
-  return vals
-}
-
-async function getVidData(rowIds) {
-  let vidData = [];
-  for (let rowId of rowIds) {
-    let query = `SELECT * FROM VideoTable WHERE rowIdNum=${rowId}`;
-    try {
-      let data = await db.get(query);
-      vidData.push(data);
-    } catch (e) {
-      console.log(`Could not get video: ${e}`);
-    }
-  }
-  return vidData;
-}
-
-async function insertPref(prefs) {
-  let query = "INSERT INTO PrefTable (better, worse) VALUES(?, ?)";
-  try {
-    await db.run(query, [prefs.better, prefs.worse]);
-    console.log(`Inserted into PrefTable: ${prefs}`);
-    await showTable("PrefTable");
-  } catch (e) {
-    console.log(`Could not report preference: ${e}`);
-  }
-  
-}
-
-async function dumpTable(table) {
-
-  let query = `select * from ${table}`
-  let result = await db.all(query);
-  return result;
-}
-
-async function showTable(table) {
-  try {
-    let tableResult = await dumpTable(table);
-    console.log(tableResult);
-  } catch (e) {
-    console.log(e);
-  }
-}
