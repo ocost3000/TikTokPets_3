@@ -39,7 +39,7 @@ async function initTables() {
   } else {
     // clean out any old data
     // NOTE: comment out for testing
-    // await deleteEverythingPrefs();
+    await deleteEverythingPrefs();
   }
 }
 

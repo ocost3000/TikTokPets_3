@@ -53,7 +53,7 @@ async function insertPref(prefs) {
 
 async function dumpTable(table) {
 
-  let sql = `select * from ${table}`
+  let sql = `select * from ${table}`;
   let result = await db.all(sql);
   return result;
 }
