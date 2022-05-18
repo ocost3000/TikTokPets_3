@@ -1,14 +1,19 @@
 let videoElmts = document.getElementsByClassName("tiktokDiv");
 
 let reloadButtons = document.getElementsByClassName("reload");
-let heartButtons = document.querySelectorAll("div.heart");
+let lovedButtons = document.querySelectorAll("div.heart.loved");
 let nextButton = document.getElementById("nextBttn");
 
-heartButtons[0].heart = heartButtons[0].children[0]
-heartButtons[1].heart = heartButtons[1].children[0]
-
-heartButtons[0].adversary = heartButtons[1]
-heartButtons[1].adversary = heartButtons[0]
+let unlovedButtons = document.querySelectorAll("div.heart.unloved");
+// heartButtons[0].heart = heartButtons[0].children[0]
+// heartButtons[1].heart = heartButtons[1].children[0]
+// 
+unlovedButtons[0].inv = unlovedButtons[1];
+unlovedButtons[1].inv = unlovedButtons[0];
+unlovedButtons[0].loved = lovedButtons[0];
+unlovedButtons[1].loved = lovedButtons[1];
+unlovedButtons[0].vidId = -1;
+unlovedButtons[1].vidId = -1;
 
 // TODO: Configure payload
 let payload = {
@@ -19,22 +24,28 @@ let payload = {
 defaultClasses = ["unloved", "far"]
 preferredClasses = ["fas", "fa-heart"]
 for (let i=0; i<2; i++) {
+  lovedButtons[i].classList.add("inactive");
 
   let reload = reloadButtons[i]; 
   reload.addEventListener("click",function() { reloadVideo(videoElmts[i]) });
-  heartButtons[i].classList.add("unloved");
-
-  heartButtons[i].addEventListener("click", event => {
+  unlovedButtons[i].addEventListener("click", event => {
     // TODO: Make the preferred heart solid
-    event.currentTarget.classList.remove("unloved");
-    event.currentTarget.heart.classList.remove("far");
-    event.currentTarget.heart.classList.add("fas");
-    payload.better = event.currentTarget.vidId;
+    console.log("click!");
 
-    event.currentTarget.adversary.classList.add("unloved");
-    event.currentTarget.adversary.heart.classList.add("far");
-    event.currentTarget.adversary.heart.classList.remove("fas");
-    payload.worse = event.currentTarget.adversary.vidId;
+    event.currentTarget.classList.add("inactive");
+    event.currentTarget.loved.classList.remove("inactive");
+
+    event.currentTarget.inv.classList.remove("inactive");
+    event.currentTarget.inv.loved.classList.add("inactive");
+    // event.currentTarget.classList.remove("unloved");
+    // event.currentTarget.heart.classList.remove("far");
+    // event.currentTarget.heart.classList.add("fas");
+
+    // event.currentTarget.adversary.classList.add("unloved");
+    // event.currentTarget.adversary.heart.classList.add("far");
+    // event.currentTarget.adversary.heart.classList.remove("fas");
+    payload.better = event.currentTarget.vidId;
+    payload.worse = event.currentTarget.inv.vidId;
 
   });
 } // for loop
@@ -70,7 +81,7 @@ sendGetRequest("/getTwoVideos")
     console.log(urls)
     for (let i=0; i<2; i++) {
       addVideo(urls[i],videoElmts[i]);
-      heartButtons[i].vidId = ids[i];
+      unlovedButtons[i].vidId = ids[i];
     }
     // load the videos after the names are pasted in! 
     loadTheVideos();
